@@ -1,7 +1,13 @@
+import networkx as nx
 import streamlit as st
 import preprocessor, helper
 import matplotlib.pyplot as plt
 import seaborn as sns
+from helper import construct_network
+import community.community_louvain as community_louvain
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+
 
 st.sidebar.title("Whatsapp Chat Analyzer")
 
@@ -97,12 +103,15 @@ if uploaded_file is not None:
             with col2:
                 st.dataframe(new_df)
 
+            # Network analysis visualization
+
         # WordCloud
         # st.title("Wordcloud")
         # df_wc = helper.create_wordcloud(selected_user,df)
         # fig,ax = plt.subplots()
         # ax.imshow(df_wc)
         # st.pyplot(fig)
+
 
         # most common words
         most_common_df = helper.most_common_words(selected_user,df)
@@ -129,8 +138,12 @@ if uploaded_file is not None:
             st.pyplot(fig)
 
 
+        analyzer = SentimentIntensityAnalyzer()
 
-
+        # Perform sentiment analysis
+        df['sentiment'] = df['message'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
+        st.title("Sentiment Analysis Results")
+        st.write(df[['user', 'message', 'sentiment']])
 
 
 
