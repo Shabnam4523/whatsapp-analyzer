@@ -137,12 +137,8 @@ if uploaded_file is not None:
             st.pyplot(fig)
 
 
-        analyzer = SentimentIntensityAnalyzer()
 
-        # Perform sentiment analysis
-        df['sentiment'] = df['message'].apply(lambda x: analyzer.polarity_scores(x)['compound'])
-        st.title("Sentiment Analysis Results")
-        st.write(df[['user', 'message', 'sentiment']])
+
 
 
 
