@@ -99,7 +99,7 @@ if uploaded_file is not None:
 
             # Network analysis visualization
 
-        # WordCloud
+        # # WordCloud
         # st.title("Wordcloud")
         # df_wc = helper.create_wordcloud(selected_user,df)
         # fig,ax = plt.subplots()
@@ -108,15 +108,13 @@ if uploaded_file is not None:
 
 
         # most common words
-        most_common_df = helper.most_common_words(selected_user,df)
-
-        fig,ax = plt.subplots()
-
-        ax.barh(most_common_df[0],most_common_df[1])
-        plt.xticks(rotation='vertical')
-
-        st.title('Most common words')
-        st.pyplot(fig)
+        # most_common_df = helper.most_common_words(selected_user,df)
+        # fig,ax = plt.subplots()
+        # ax.barh(most_common_df[0],most_common_df[1])
+        # plt.xticks(rotation='vertical')
+        #
+        # st.title('Most common words')
+        # st.pyplot(fig)
 
         # emoji analysis
         emoji_df = helper.emoji_helper(selected_user,df)

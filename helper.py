@@ -4,6 +4,7 @@ from wordcloud import WordCloud
 import pandas as pd
 from collections import Counter
 import emoji
+import re
 
 
 extract = URLExtract()
@@ -48,11 +49,20 @@ def create_wordcloud(selected_user,df):
     temp = temp[temp['message'] != '<Media omitted>\n']
 
     def remove_stop_words(message):
-        y = []
+        # Define a regular expression pattern to match Hindi and English characters
+        hindi_english_pattern = re.compile(r'[\u0900-\u097Fa-zA-Z]+')
+
+        # Initialize an empty list to store valid words
+        valid_words = []
+
+        # Iterate over each word in the message
         for word in message.lower().split():
-            if word not in stop_words:
-                y.append(word)
-        return " ".join(y)
+            # Check if the word matches the Hindi and English pattern
+            if hindi_english_pattern.match(word):
+                valid_words.append(word)
+
+        # Join the valid words into a string and return it
+        return " ".join(valid_words)
 
     wc = WordCloud(width=500,height=500,min_font_size=10,background_color='white')
     temp['message'] = temp['message'].apply(remove_stop_words)
@@ -73,8 +83,18 @@ def most_common_words(selected_user,df):
     words = []
 
     for message in temp['message']:
+        message = re.sub(r'[^\w\s]', '', message)  # Remove special characters
         for word in message.lower().split():
-            if word not in stop_words:
+            if word not in stop_words and not any(
+                    char.isdigit() or char in ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌',
+                                               '😍', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎',
+                                               '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩',
+                                               '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰',
+                                               '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦',
+                                               '😧', '😮', '😲', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒',
+                                               '🤕', '🥺', '👏', '🙌', '👍', '👎', '👊', '✊', '🤛', '🤜', '🤝', '🙏', '✍️', '💅',
+                                               '🤳', '💪', '🦵', '🦶', '👂', '🦻', '👃', '🧠', '🦷', '🦴', '👀', '👁️', '👅', '👄']
+                    for char in word):
                 words.append(word)
 
     most_common_df = pd.DataFrame(Counter(words).most_common(20))
